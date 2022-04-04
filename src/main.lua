@@ -9,6 +9,14 @@ end
 
 initializeCMOAI()
 
+
+--
+--UPDATE
+--
+function updateCMOAI()
+    
+end
+
 -- local side = sideManager:getSides()[2]
 
 -- local points = side:getObjectives()[1]:getRegion():getPoints()

@@ -105,6 +105,6 @@ function initTrackedSideManager()
         --get units
         currentSide.units = VP_GetSide({Side = currentSide:getName()}).units
     end
-    logObject("TrackedSideManager",sideManager)
+    -- logObject("TrackedSideManager",sideManager)
 end
 

@@ -34,7 +34,7 @@ end
 
 function TrackedSideObjectiveRegion:sortPoints()
     centerpoint = calculateCenterpoint(self.points)
-    logObject("self.points",self.points)
+    -- logObject("self.points",self.points)
     local newTable = self.points
     table.sort(newTable,regionSortFunc)
     self.points = newTable
