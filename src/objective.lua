@@ -25,6 +25,21 @@ function TrackedSideObjectiveRegion:getPoints()
     return self.points
 end
 
+local centerpoint
+
+function regionSortFunc(k1, k2)
+    ScenEdit_SpecialMessage("playerSide", dump(centerpoint).."<br>"..dump(k1).."<br>"..dump(k2))
+    return getAngle(centerpoint,k1) < getAngle(centerpoint,k2)
+end
+
+function TrackedSideObjectiveRegion:sortPoints()
+    centerpoint = calculateCenterpoint(self.points)
+    logObject("self.points",self.points)
+    local newTable = self.points
+    table.sort(newTable,regionSortFunc)
+    self.points = newTable
+end
+
 
 --
 --TrackedSideObjective
@@ -133,6 +148,8 @@ function getAllObjectivesForSide(side)
                 for k,v in ipairs(pointAccumulator) do
                     newRegion:addPoint(v)
                 end
+                --points are organized counterclockwise
+                newRegion:sortPoints()
                 --create objective object
                 local newObj = TrackedSideObjective:new(objectiveId,TrackedSideObjective:codeToObjType(objectiveType))
                 newObj:attachRegion(newRegion)
@@ -151,11 +168,11 @@ function getAllObjectivesForSide(side)
                 for k,v in pairs(pointAccumulator) do pointAccumulator[k]=nil end
             end
         else
-            table.insert(pointAccumulator, currentPoint)
+            table.insert(pointAccumulator, currentPoint[1])
             waypointCount = waypointCount + 1
         end
     end
-    local nameToCheck = "<CMOAI>O"..objectiveId.."_"..waypointCount.."_"..objectiveType
+    -- local nameToCheck = "<CMOAI>O"..objectiveId.."_"..waypointCount.."_"..objectiveType
 end
 
 

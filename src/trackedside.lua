@@ -19,6 +19,7 @@ function TrackedSide:new(guid,name)
     instance.guid = guid
     instance.name = name
     instance.objectives = {}
+    instance.units = {}
     return instance
 end
 
@@ -36,6 +37,17 @@ function TrackedSide:addObjective(objective)
     table.insert(self.objectives, objective)
 end
 
+function TrackedSide:getObjectives()
+    return self.objectives
+end
+
+function TrackedSide:addUnit(unit)
+    table.insert(self.units,unit)
+end
+
+function TrackedSide:getUnits()
+    return self.units
+end
 
 
 --
@@ -85,9 +97,13 @@ end
 function initTrackedSideManager()
     sideManager = TrackedSideManager:new()
     sideManager:parseSideTable()
+    --add objectives, units
     for k,v in ipairs(sideManager:getSides()) do
         local currentSide = v
+        --get objectives
         getAllObjectivesForSide(currentSide)
+        --get units
+        currentSide.units = VP_GetSide({Side = currentSide:getName()}).units
     end
     logObject("TrackedSideManager",sideManager)
 end
