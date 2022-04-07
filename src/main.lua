@@ -5,6 +5,8 @@
 --
 function initializeCMOAI()
     initTrackedSideManager()
+    generateArmyGroups()
+    orderArmies()
 end
 
 initializeCMOAI()

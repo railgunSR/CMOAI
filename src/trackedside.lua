@@ -3,7 +3,6 @@
 --
 --GLOBALS
 --
-local sideManager
 
 
 --
@@ -20,6 +19,7 @@ function TrackedSide:new(guid,name)
     instance.name = name
     instance.objectives = {}
     instance.units = {}
+    instance.armies = {}
     return instance
 end
 
@@ -47,6 +47,14 @@ end
 
 function TrackedSide:getUnits()
     return self.units
+end
+
+function TrackedSide:addArmy(army)
+    table.insert(self.armies,army)
+end
+
+function TrackedSide:getArmies()
+    return self.armies
 end
 
 
@@ -83,7 +91,8 @@ function TrackedSideManager:parseSideTable()
         then
             --if the guid contains <CMOAI>
             --register it to the trackedsidemanager
-            self:addSide(TrackedSide:new(v.guid,v.name))
+            local side = TrackedSide:new(v.guid,v.name)
+            self:addSide(side)
         end
     end
 end
@@ -103,7 +112,9 @@ function initTrackedSideManager()
         --get objectives
         getAllObjectivesForSide(currentSide)
         --get units
-        currentSide.units = VP_GetSide({Side = currentSide:getName()}).units
+        for unitk,unit in ipairs(VP_GetSide({Side = currentSide:getName()}).units) do
+            currentSide:addUnit(unit)
+        end
     end
     -- logObject("TrackedSideManager",sideManager)
 end

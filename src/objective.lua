@@ -3,6 +3,12 @@
 
 
 --
+-- Globals
+--
+objectiveIdCounter = 0
+
+
+--
 --TrackedSideObjectiveRegion
 --
 TrackedSideObjectiveRegion = {}
@@ -25,10 +31,8 @@ function TrackedSideObjectiveRegion:getPoints()
     return self.points
 end
 
-local centerpoint
-
 function regionSortFunc(k1, k2)
-    ScenEdit_SpecialMessage("playerSide", dump(centerpoint).."<br>"..dump(k1).."<br>"..dump(k2))
+    -- ScenEdit_SpecialMessage("playerSide", dump(centerpoint).."<br>"..dump(k1).."<br>"..dump(k2))
     return getAngle(centerpoint,k1) < getAngle(centerpoint,k2)
 end
 
@@ -53,10 +57,15 @@ TrackedSideObjective.statuses = { complete = "complete", failed = "failed", notc
 function TrackedSideObjective:new(id,type)
     local instance = {}   -- create object if user does not provide one
     setmetatable(instance, TrackedSideObjective)
+    instance.id = id
     instance.type = type
     instance.status = TrackedSideObjective.statuses.notcomplete
     instance.region = {}
     return instance
+end
+
+function TrackedSideObjective:getId()
+    return self.id
 end
 
 --- Attaches a region to this objective
@@ -68,6 +77,10 @@ end
 --- Returns the region assigned to this objective
 function TrackedSideObjective:getRegion()
     return self.region
+end
+
+function TrackedSideObjective:getType()
+    return self.type
 end
 
 function TrackedSideObjective:codeToObjType(code)
@@ -109,14 +122,15 @@ function getAllObjectivesForSide(side)
     while(shouldRun) do
         --break infinite loops just in case
         incrementCount = incrementCount + 1
-        if(incrementCount > 10000)
+        if(incrementCount > 100)
         then
             shouldRun = false
         end
 
         --actual logic
-        local currentPoint = ScenEdit_GetReferencePoints({side=sideName, area={"<CMOAI>O"..objectiveId.."_"..waypointCount.."_"..objectiveType}})
-        if(currentPoint == nil)
+        local nameToCheck = "<CMOAI>O"..objectiveId.."_"..waypointCount.."_"..objectiveType
+        local currentPoints = ScenEdit_GetReferencePoints({side=sideName, area={sideName,nameToCheck}})
+        if(#currentPoints < 2)
         then
             --if point accumulator isn't empty, we have a valid region
             --   create TrackedSideObjectiveRegion from points
@@ -168,7 +182,7 @@ function getAllObjectivesForSide(side)
                 for k,v in pairs(pointAccumulator) do pointAccumulator[k]=nil end
             end
         else
-            table.insert(pointAccumulator, currentPoint[1])
+            table.insert(pointAccumulator, currentPoints[2])
             waypointCount = waypointCount + 1
         end
     end
