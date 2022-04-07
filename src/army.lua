@@ -10,7 +10,7 @@
 
 ArmyGroup = {}
 ArmyGroup.__index = ArmyGroup
-ArmyGroup.types = { landrecon = "landrecon", landmain = "landmain", arty = "arty", landsupp = "landsupp" }
+ArmyGroup.types = { landrecon = "landrecon", landmain = "landmain", arty = "arty", landsupp = "landsupp", heli = "heli" }
 
 --- Instantiates a new ArmyGroup
 ---@param type string
@@ -107,9 +107,12 @@ function ArmyGroup:generateOrders()
 end
 
 function ArmyGroup:applyOrders()
-    for k,v in ipairs(self.units) do
-        local currentUnit = v
-        ScenEdit_AssignUnitToMission (currentUnit.guid,self.mission.guid)
+    if(mission ~= nil)
+    then
+        for k,v in ipairs(self.units) do
+            local currentUnit = v
+            ScenEdit_AssignUnitToMission (currentUnit.guid,self.mission.guid)
+        end
     end
 end
 

@@ -44,6 +44,13 @@ function calculateCenterpoint(points)
    return rVal
 end
 
+function getDistance(point1, point2)
+   local deltaX = math.abs(point1.latitude - point2.latitude)
+   local deltaY = math.abs(point1.longitude - point2.longitude)
+   local dist = math.sqrt(deltaX * deltaX + deltaY * deltaY)
+   return dist
+end
+
 
 
 --
